@@ -13,10 +13,12 @@ GET     /ws                         controllers.Application.socket()
 
 # Import controllers
 GET     /import/nbLines             controllers.iimport.ImportControllerImpl.getNbLines()
+GET     /import/nbCurrentLines      controllers.iimport.ImportControllerImpl.getCurrentNbLines()
 GET     /import/pause               controllers.iimport.ImportControllerImpl.stop()
 GET     /import/reset               controllers.iimport.ImportControllerImpl.deleteAllData()
-GET     /import/:start              controllers.iimport.ImportControllerImpl.start(start :Long)
+GET     /import/start               controllers.iimport.ImportControllerImpl.start()
 
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+

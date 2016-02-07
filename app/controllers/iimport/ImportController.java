@@ -9,10 +9,9 @@ public interface ImportController  {
 
     /**
      *
-     * @param start The line number to start the import from
      * @return the line number it stopped at
      */
-    Result start(long start);
+    Result start();
 
     /**
      * Stops the import
@@ -31,4 +30,10 @@ public interface ImportController  {
      * @return
      */
     Result getNbLines();
+
+    /**
+     * Return the number of lines imported so far
+     * @return
+     */
+    Result getCurrentNbLines();
 }

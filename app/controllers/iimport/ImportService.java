@@ -7,9 +7,8 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.stream.Stream;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.Model;
-import com.avaje.ebean.SqlUpdate;
+import com.avaje.ebean.*;
+import com.avaje.ebean.config.PersistBatch;
 import models.Value;
 import play.Logger;
 
@@ -22,9 +21,9 @@ public class ImportService {
 
     private FileSystem filesystem = FileSystems.getDefault();
 
-    private static Long offset = 0L;
 
     private static boolean stopImport = false;
+    private static boolean importRunning = false;
 
     private static File DATA_FILE = Paths.get("data/data.txt").toFile();
 
@@ -34,30 +33,58 @@ public class ImportService {
      * @param offset The offset to start from. It is the line number to start from.
      * @return The Line number it stopped at
      */
-    public long startImport(long offset) throws IOException {
+    public long startImport(final long offset) throws IOException {
 
-        this.offset = offset;
+        if (importRunning){
+            return -1;
+        }
+
+        stopImport = false;
+        importRunning = true;
+        long currentOffset = 0L;
 
         try (BufferedReader br = new BufferedReader(new FileReader(DATA_FILE))) {
             String line;
-            while ((line = br.readLine()) != null && !stopImport) {
-                String[] tokens = line.split(",");
-                Value value = new Value();
-                value.timestamp = Long.valueOf(tokens[0]);
-                value.value = Long.valueOf(tokens[1]);
-                value.country = tokens[2];
 
+            Transaction transaction = getTransaction();
+            while ((line = br.readLine()) != null && !stopImport) {
+                Value value = getValueFromString(line);
                 value.save();
 
-                offset++;
+                currentOffset++;
+                if (currentOffset % 10000 == 0) {
+                    //Notify the front
+                    ImportWebsocketActor.out.tell(String.valueOf(offset +currentOffset), ImportWebsocketActor.out);
 
-                if (offset % 1000 == 0) {
-                    ImportWebsocketActor.out.tell(offset, ImportWebsocketActor.out);
+                    //Commit periodically, or else the commits take too much time and pausing the process takes too long
+                    transaction.commit();
+                    transaction = getTransaction();
                 }
             }
+            transaction.commit();
         }
+        finally {
 
-        return offset;
+            importRunning = false;
+        }
+        return offset + currentOffset;
+    }
+
+    private Transaction getTransaction() {
+        Transaction transaction  = Value.db().beginTransaction();
+        transaction.setBatchMode(true);
+        transaction.setBatchSize(1000);
+        transaction.setBatch(PersistBatch.ALL);
+        return transaction;
+    }
+
+    private Value getValueFromString(String line) {
+        String[] tokens = line.split(",");
+        Value value = new Value();
+        value.timestamp = Long.valueOf(tokens[0]);
+        value.value = Long.valueOf(tokens[1]);
+        value.country = tokens[2];
+        return value;
     }
 
     public static long getLineCount() {
@@ -70,18 +97,21 @@ public class ImportService {
     }
 
 
-    public long pauseImport() {
+    public void pauseImport() {
         stopImport = true;
-        return offset;
     }
 
     public void resetImport() {
+        stopImport = true;
         SqlUpdate down = Ebean.createSqlUpdate("TRUNCATE TABLE VALUE");
         down.execute();
-        offset = 0L;
     }
 
     public void setFilesystem(FileSystem filesystem) {
         this.filesystem = filesystem;
+    }
+
+    public static long getCurrentLineCount() {
+        return new Model.Finder(Value.class).findRowCount();
     }
 }

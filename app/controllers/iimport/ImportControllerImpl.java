@@ -10,13 +10,16 @@ import java.io.IOException;
  */
 public class ImportControllerImpl extends Controller implements ImportController {
 
+    private static Long offset = 0L;
+
     private final ImportService importService = new ImportService();
 
     @Override
-    public Result start(long start) {
+    public Result start() {
         try {
-            importService.startImport(start);
-            return ok(String.valueOf(start));
+            offset = importService.getCurrentLineCount();
+            offset = importService.startImport(offset);
+            return ok(String.valueOf(offset));
         } catch (IOException e) {
             return internalServerError(e.getMessage());
         }
@@ -24,19 +27,29 @@ public class ImportControllerImpl extends Controller implements ImportController
 
     @Override
     public Result stop() {
-        return ok(String.valueOf(importService.pauseImport()));
+        importService.pauseImport();
+        return ok(String.valueOf(offset));
     }
 
     @Override
     public Result deleteAllData() {
         importService.resetImport();
-        return ok();
+        offset = 0L;
+        return ok(String.valueOf(offset));
     }
 
     @Override
     public Result getNbLines() {
-        return ok(String.valueOf(ImportService.getLineCount()));
+        //This was too long;
+        //return ok(String.valueOf(ImportService.getLineCount()));
+
+        //This is faster
+        return ok(String.valueOf(63089679));
     }
 
+    @Override
+    public Result getCurrentNbLines() {
+        return ok(String.valueOf(importService.getCurrentLineCount()));
+    }
 
 }
