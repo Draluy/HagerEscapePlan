@@ -25,4 +25,10 @@ public interface ImportController  {
      * @return
      */
     Result deleteAllData();
+
+    /**
+     * Returns the total nb of lines to import
+     * @return
+     */
+    Result getNbLines();
 }

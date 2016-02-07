@@ -1,10 +1,11 @@
 # --- !Ups
 
 create table value (
+  id                            bigint auto_increment,
   timestamp                     bigint not null,
-  value                         bigint,
-  country                       varchar(255),
-  constraint pk_value primary key (timestamp)
+  value                         bigint not null,
+  country                       varchar(255) not null,
+  constraint pk_value primary key (id)
 );
 
 create index ix_value_timestamp on value (timestamp);

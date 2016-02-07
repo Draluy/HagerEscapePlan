@@ -30,7 +30,8 @@ public class Application extends Controller {
         return ok(toJson(values));
     }
 
-    public WebSocket<String> socket() {
+    public  WebSocket<String> socket() {
         return WebSocket.withActor(ImportWebsocketActor::props);
     }
+
 }

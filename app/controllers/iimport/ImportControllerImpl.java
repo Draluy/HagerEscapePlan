@@ -24,11 +24,19 @@ public class ImportControllerImpl extends Controller implements ImportController
 
     @Override
     public Result stop() {
-        return null;
+        return ok(String.valueOf(importService.pauseImport()));
     }
 
     @Override
     public Result deleteAllData() {
-        return null;
+        importService.resetImport();
+        return ok();
     }
+
+    @Override
+    public Result getNbLines() {
+        return ok(String.valueOf(ImportService.getLineCount()));
+    }
+
+
 }

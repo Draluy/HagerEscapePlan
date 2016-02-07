@@ -12,6 +12,9 @@ GET     /values                     controllers.Application.getValues()
 GET     /ws                         controllers.Application.socket()
 
 # Import controllers
+GET     /import/nbLines             controllers.iimport.ImportControllerImpl.getNbLines()
+GET     /import/pause               controllers.iimport.ImportControllerImpl.stop()
+GET     /import/reset               controllers.iimport.ImportControllerImpl.deleteAllData()
 GET     /import/:start              controllers.iimport.ImportControllerImpl.start(start :Long)
 
 
