@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function (){
       $("#PauseImport").show();
       $.get( "import/start", function( data ) {
         $("#ImportProgress")[0].value = data;
-        $("#StartImport").prop( "disabled", false );
         console.log("Import finished with "+data+" lines imported.");
       });
     };
@@ -14,7 +13,6 @@ document.addEventListener("DOMContentLoaded", function (){
     var pauseImport = function(e){
       $("#PauseImport").hide();
       $("#StartImport").show();
-      $("#StartImport").prop( "disabled", true );
       $.get( "import/pause", function( data ) {
         console.log("Import paused at line "+data);
       });

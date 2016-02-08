@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   cache,
   javaWs,
   "org.mockito" % "mockito-core" % "1.9.5" % "test",
-  "com.google.jimfs" % "jimfs" % "1.0" % "test"
+  "com.google.jimfs" % "jimfs" % "1.0" % "test",
+  "com.typesafe.akka" % "akka-testkit_2.11" % "2.4.1" % "test"
 )
 
 libraryDependencies += specs2 % Test

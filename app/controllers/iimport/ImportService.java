@@ -1,16 +1,20 @@
 package controllers.iimport;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.stream.Stream;
 
 import com.avaje.ebean.*;
+import com.avaje.ebean.annotation.SqlSelect;
 import com.avaje.ebean.config.PersistBatch;
 import models.Value;
 import play.Logger;
+import play.db.DB;
 
 import javax.persistence.OptimisticLockException;
 
@@ -25,7 +29,7 @@ public class ImportService {
     private static boolean stopImport = false;
     private static boolean importRunning = false;
 
-    private static File DATA_FILE = Paths.get("data/data.txt").toFile();
+    private static Path DATA_FILE = Paths.get("data/data.txt");
 
     /**
      * Import the file in the database
@@ -33,7 +37,7 @@ public class ImportService {
      * @param offset The offset to start from. It is the line number to start from.
      * @return The Line number it stopped at
      */
-    public long startImport(final long offset) throws IOException {
+/*    public long startImport(final long offset) throws IOException {
 
         if (importRunning){
             return -1;
@@ -46,7 +50,13 @@ public class ImportService {
         try (BufferedReader br = new BufferedReader(new FileReader(DATA_FILE))) {
             String line;
 
-            Transaction transaction = getTransaction();
+            Ebean.beginTransaction();
+
+            //Catch up to the point of the file I should be
+            for (int i=0;i<offset;i++){
+                br.readLine();
+            }
+
             while ((line = br.readLine()) != null && !stopImport) {
                 Value value = getValueFromString(line);
                 value.save();
@@ -57,16 +67,68 @@ public class ImportService {
                     ImportWebsocketActor.out.tell(String.valueOf(offset +currentOffset), ImportWebsocketActor.out);
 
                     //Commit periodically, or else the commits take too much time and pausing the process takes too long
-                    transaction.commit();
-                    transaction = getTransaction();
+                    Ebean.commitTransaction();
+                    Ebean.beginTransaction();
                 }
             }
-            transaction.commit();
+            Ebean.commitTransaction();
         }
         finally {
 
             importRunning = false;
         }
+        return offset + currentOffset;
+    }*/
+
+    public long startImport (long offset) throws IOException {
+        return startImport(offset, DATA_FILE);
+    }
+
+    public long startImport (long offset, Path file) throws IOException {
+
+        if (importRunning){
+            return -1;
+        }
+
+        stopImport = false;
+        importRunning = true;
+        long currentOffset = 0L;
+
+        try (InputStream in = Files.newInputStream(file); BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+             Connection connection = DB.getConnection();
+             Statement statement = connection.createStatement();) {
+            String line;
+
+            //Catch up to the point of the file I should be
+            for (int i=0;i<offset;i++){
+                br.readLine();
+            }
+            PreparedStatement psInsert =  connection.prepareStatement("insert into value(timestamp, value, country) values( ?,?,?)");
+
+            while ((line = br.readLine()) != null && !stopImport) {
+                Value value = getValueFromString(line);
+
+                psInsert.setLong (1,value.timestamp);
+                psInsert.setLong (2,value.value);
+                psInsert.setString (3,value.country);
+                psInsert.execute();
+
+                currentOffset++;
+                if (currentOffset % 10000 == 0) {
+                    //Notify the front
+                    ImportWebsocketActor.out.tell(String.valueOf(offset +currentOffset), ImportWebsocketActor.out);
+
+                    //Commit periodically, or else the commits take too much time and pausing the process takes too long
+                    //statement.executeBatch();
+                }
+            }
+        }catch(SQLException ex){
+            Logger.error("Error while inserting value",ex);
+        }
+        finally {
+            importRunning = false;
+        }
+        ImportWebsocketActor.out.tell(String.valueOf(offset +currentOffset), ImportWebsocketActor.out);
         return offset + currentOffset;
     }
 
@@ -87,8 +149,8 @@ public class ImportService {
         return value;
     }
 
-    public static long getLineCount() {
-        try (Stream<String> lines = Files.lines(DATA_FILE.toPath())) {
+    public long getLineCount() {
+        try (Stream<String> lines = Files.lines(DATA_FILE)) {
             return lines.count();
         } catch (IOException ex) {
             Logger.error("Could not read the number of lines to import", ex);
@@ -112,6 +174,7 @@ public class ImportService {
     }
 
     public static long getCurrentLineCount() {
-        return new Model.Finder(Value.class).findRowCount();
+        SqlQuery down = Ebean.createSqlQuery("select count(*) as count from VALUE");
+        return down.findList().get(0).getLong("count");
     }
 }

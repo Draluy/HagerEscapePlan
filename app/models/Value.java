@@ -10,11 +10,9 @@ import java.util.Date;
 
 @Entity
 public class Value extends Model {
-
     @Index
     @Constraints.Required
     public Long timestamp;
-
 
     @Constraints.Required
     public Long value;
