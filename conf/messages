@@ -1,0 +1,15 @@
+title=Hager Escape Plan
+intro=This website is not empty. Please <a href="#one">start by importing data.</a>
+import.title=Import
+import.button.start=Start
+import.button.pause=Pause
+import.button.reset=Reset
+
+menu.import=Import Data
+menu.sums=Total by Country
+
+values.by.country=Values by country
+sum.button.refresh=Refresh
+sum.country=Country
+sum.value=Total Sum
+values.by.country.intro=Here are presented the sum of the values of each country.
