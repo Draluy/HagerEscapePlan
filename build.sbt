@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   javaWs,
   "org.mockito" % "mockito-core" % "1.9.5" % "test",
   "com.google.jimfs" % "jimfs" % "1.0" % "test",
-  "com.typesafe.akka" % "akka-testkit_2.11" % "2.4.1" % "test"
+  "com.typesafe.akka" % "akka-testkit_2.11" % "2.4.1" % "test",
+  "org.postgresql" % "postgresql" % "9.3-1100-jdbc4"
 )
 
 libraryDependencies += specs2 % Test

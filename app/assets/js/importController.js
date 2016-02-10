@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function (){
     var startImport = function(e){
       $("#StartImport").hide();
       $("#PauseImport").show();
-      $.get( "import/start", function( data ) {
+          $.get( "import/start", function( data ) {
         $("#ImportProgress")[0].value = data;
         console.log("Import finished with "+data+" lines imported.");
       });

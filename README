@@ -23,3 +23,7 @@ Partie web :
 - Pouvoir choisir une période au choix.
 - Pouvoir choisir la granularité sur le chart (jour, semaine, mois, année)
 - Pouvoir choisir une source qui sera représentée par une 2eme courbe sur le chart, reprenant les mêmes fonctionnalités mais qui représente uniquement les valeurs de cette source.
+
+pk play
+pk cle primaire nnumerique
+pk h2

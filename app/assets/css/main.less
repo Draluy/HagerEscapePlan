@@ -1,3 +1,43 @@
+@pink: rgba(255, 255, 255, 0.55);
+
 #PauseImport{
-display:none;
+    display:none;
+}
+
+div.sumvalues{
+    display: table;
+    width: 100%;
+    .sumrow{
+        display:flex;
+        flex-direction: row;
+        padding: 0px 15px;
+        .country, .sumvalue{
+            flex:1;
+        }
+    }
+
+    header.sumrow{
+        padding: 0px;
+        font-weight: bold;
+        text-align: center;
+        color: white;
+
+        .sumvalue{
+            border-left: 1px solid @pink;
+        }
+    }
+
+    .sumrow:not(:last-child){
+        border-bottom: 1px solid @pink;
+    }
+}
+
+#two .inner{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    #sums{
+        overflow-y:scroll;
+    }
 }

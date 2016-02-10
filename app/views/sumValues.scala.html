@@ -1,0 +1,15 @@
+@import play.i18n._
+@(sumvalues: List[models.Sum])
+
+<div class="sumvalues">
+    <header class="sumrow">
+        <div class="country">@Messages.get("sum.country")</div>
+        <div class="sumvalue">@Messages.get("sum.value")</div>
+    </header>
+    @for(sum <- sumvalues) {
+    <div class="sumrow">
+        <div class="country">@sum.country</div>
+        <div class="sumvalue">@sum.valueSum</div>
+    </div>
+    }
+</div>

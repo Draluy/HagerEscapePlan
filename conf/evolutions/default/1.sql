@@ -1,10 +1,10 @@
 # --- !Ups
 
 create table value (
+  id  SERIAL PRIMARY KEY,
   timestamp                     bigint not null,
   value                         bigint not null,
-  country                       varchar(255) not null,
-  constraint pk_value primary key (timestamp, value, country)
+  country                       varchar(255) not null
 );
 
 create index ix_value_timestamp on value (timestamp);

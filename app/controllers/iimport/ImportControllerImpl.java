@@ -5,6 +5,8 @@ import play.mvc.Result;
 
 import java.io.IOException;
 
+import static play.libs.Json.toJson;
+
 /**
  * Created by dralu on 2/5/2016.
  */
@@ -51,5 +53,7 @@ public class ImportControllerImpl extends Controller implements ImportController
     public Result getCurrentNbLines() {
         return ok(String.valueOf(importService.getCurrentLineCount()));
     }
+
+
 
 }

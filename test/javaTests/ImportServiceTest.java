@@ -87,9 +87,6 @@ public class ImportServiceTest {
         Database database = Databases.inMemory("default");
         database.getConnection().setAutoCommit(true);
         Evolutions.applyEvolutions(database);
-        Statement statement = database.getConnection().createStatement();
-        statement.execute("truncate table value");
-        statement.close();
 
         Application application = new GuiceApplicationBuilder()
                 .overrides(bind(Database.class).toInstance(database)
@@ -141,6 +138,7 @@ public class ImportServiceTest {
 
             }
         });
+        Evolutions.cleanupEvolutions(database);
         database.shutdown();
     }
 
