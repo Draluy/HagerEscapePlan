@@ -1,7 +1,7 @@
 # --- !Ups
 
 create table value (
-  id  SERIAL PRIMARY KEY,
+  id bigint auto_increment,
   timestamp                     bigint not null,
   value                         bigint not null,
   country                       varchar(255) not null
