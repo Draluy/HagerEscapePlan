@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import com.avaje.ebean.*;
 import controllers.sum.ValueCounter;
 import controllers.value.dao.ValueDAOJDBCBatchServiceImpl;
-import controllers.value.dao.ValueDAOService;
+import controllers.value.dao.ValueConsumer;
 import models.Sum;
 import models.Value;
 import play.Logger;
@@ -24,7 +24,7 @@ import play.db.DB;
 public class ImportService {
 
     private FileSystem filesystem = FileSystems.getDefault();
-    private ValueDAOService valueDAOService = new ValueDAOJDBCBatchServiceImpl();
+    private ValueConsumer valueDAOService = new ValueDAOJDBCBatchServiceImpl();
     private ValueCounter valueCounter = new ValueCounter();
 
     private static boolean stopImport = false;

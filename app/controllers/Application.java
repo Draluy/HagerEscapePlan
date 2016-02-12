@@ -20,13 +20,6 @@ public class Application extends Controller {
         return ok(index.render());
     }
 
-    public Result addValue(){
-        Value value = Form.form(Value.class).bindFromRequest().get();
-        value.save();
-        return redirect(routes.Application.index());
-    }
-
-
     public  WebSocket<String> socket() {
         return WebSocket.withActor(ImportWebsocketActor::props);
     }

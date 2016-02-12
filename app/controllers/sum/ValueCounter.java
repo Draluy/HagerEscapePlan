@@ -1,7 +1,7 @@
 package controllers.sum;
 
 import com.avaje.ebean.Model;
-import controllers.value.dao.ValueDAOService;
+import controllers.value.dao.ValueConsumer;
 import models.Sum;
 import models.Value;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by dralu on 2/10/2016.
  */
-public class ValueCounter implements ValueDAOService {
+public class ValueCounter implements ValueConsumer {
     private Map<String, Long> sumValues = new HashMap<>();
 
     public static List<Sum> getSumValues() {
@@ -41,5 +41,11 @@ public class ValueCounter implements ValueDAOService {
                 sum.insert();
             }
         }
+        sumValues.clear();
+    }
+
+    @Override
+    public void doAtTheEnd() {
+        doPeriodically();
     }
 }

@@ -11,7 +11,7 @@ import java.sql.SQLException;
 /**
  * Created by dralu on 2/10/2016.
  */
-public class ValueDAOJDBCBatchServiceImpl implements ValueDAOService{
+public class ValueDAOJDBCBatchServiceImpl implements ValueConsumer {
 
     private Connection connection = DB.getConnection();
     private PreparedStatement psInsert;
@@ -43,5 +43,10 @@ public class ValueDAOJDBCBatchServiceImpl implements ValueDAOService{
         } catch (SQLException e) {
             Logger.error("Eroor during execution of batch", e);
         }
+    }
+
+    @Override
+    public void doAtTheEnd() {
+        doPeriodically();
     }
 }

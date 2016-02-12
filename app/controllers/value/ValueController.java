@@ -17,6 +17,4 @@ public class ValueController extends Controller {
         Value value = new Model.Finder<Long, Value>(Value.class).byId(id);
         return ok(toJson(value));
     }
-
-
 }

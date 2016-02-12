@@ -36,9 +36,9 @@ document.addEventListener("DOMContentLoaded", function (){
     });
 
     //Iniitialize the current import state
-    $.get("/import/nbCurrentLines", function( data ) {
-        $("#ImportProgress")[0].value = data;
-    });
+//    $.get("/import/nbCurrentLines", function( data ) {
+//        $("#ImportProgress")[0].value = data;
+//    });
 
     $("#StartImport").click(startImport);
     $("#PauseImport").click(pauseImport);

@@ -13,3 +13,7 @@ sum.button.refresh=Refresh
 sum.country=Country
 sum.value=Total Sum
 values.by.country.intro=Here are presented the sum of the values of each country.
+
+values.per.year=Values by year
+values.per.year.intro=This graph shows the daily sum of the values during a year.
+values.per.year.select=Select the year to display

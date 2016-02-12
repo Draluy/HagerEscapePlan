@@ -11,7 +11,7 @@ import java.sql.SQLException;
 /**
  * Created by dralu on 2/10/2016.
  */
-public class ValueDAOJDBCServiceImpl implements ValueDAOService {
+public class ValueDAOJDBCServiceImpl implements ValueConsumer {
 
     private Connection connection = DB.getConnection();
     private PreparedStatement psInsert;
@@ -40,5 +40,10 @@ public class ValueDAOJDBCServiceImpl implements ValueDAOService {
     @Override
     public void doPeriodically() {
 
+    }
+
+    @Override
+    public void doAtTheEnd() {
+        doPeriodically();
     }
 }

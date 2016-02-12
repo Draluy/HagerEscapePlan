@@ -25,5 +25,16 @@ Partie web :
 - Pouvoir choisir une source qui sera représentée par une 2eme courbe sur le chart, reprenant les mêmes fonctionnalités mais qui représente uniquement les valeurs de cette source.
 
 pk play
-pk cle primaire nnumerique
 pk h2
+
+Bugs et problemes connus:
+
+
+Import:
+- Faire F5 prendant un import voit le bouton Play degrise, et non pas le bouton Pause. Apputer sur Play regle le probleme. La base reste coherente.
+
+H2:
+- La base consomme beaucoup de RAM, et les performances ont tendance a s'amoindrir au fur et a mesure de l'import.
+
+Postgresql:
+- Pgsql met du temps a recuperer le nombre de lignes de la base, la requete nbCurrentLines peut donc prendre du temps.
