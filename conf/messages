@@ -9,11 +9,18 @@ menu.import=Import Data
 menu.sums=Total by Country
 
 values.by.country=Values by country
-sum.button.refresh=Refresh
+sum.button.refresh=Refresh with default values
 sum.country=Country
 sum.value=Total Sum
 values.by.country.intro=Here are presented the sum of the values of each country.
+sum.filter.according.to.valuesbyyear=Filter the values according to the period of the chart in the next section.
 
 values.per.year=Values by year
 values.per.year.intro=This graph shows the daily sum of the values during a year.
-values.per.year.select=Select the year to display
+values.per.year.select=Display the year
+values.per.year.granularity=with granularity
+values.per.year.granularity.day=Day
+values.per.year.granularity.week=Week
+values.per.year.granularity.month=Month
+values.per.year.granularity.year=Year
+values.per.year.go=Go

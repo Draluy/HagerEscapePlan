@@ -72,6 +72,7 @@
 
             <ul class="actions">
                 <li><button id="RefreshValues">&#8635; @Messages.get("sum.button.refresh")</button></li>
+                <li><input type="checkbox" id="filtercbx" value="filtercbx"/><label for="filtercbx">@Messages.get("sum.filter.according.to.valuesbyyear")</label></li>
             </ul>
             <div id="sums" class="features">
 
@@ -88,7 +89,16 @@
             <p>@Messages.get("values.per.year.intro")</p>
 
             <div id="yearcbx" class="actions">
-                @Messages.get("values.per.year.select"):<select id="years"></select><button id="RefreshYearsValues">&#8635; @Messages.get("sum.button.refresh")</button>
+                <label for="years">@Messages.get("values.per.year.select")</label>
+                <select id="years"></select>
+                <label for="granularity">@Messages.get("values.per.year.granularity")</label>
+                <select id="granularity">
+                    <option value="day">@Messages.get("values.per.year.granularity.day")</option>
+                    <option value="week">@Messages.get("values.per.year.granularity.week")</option>
+                    <option value="month">@Messages.get("values.per.year.granularity.month")</option>
+                    <option value="year" selected>@Messages.get("values.per.year.granularity.year")</option>
+                </select>
+                <button id="go">@Messages.get("values.per.year.go")</button>
             </div>
             <div class="spinner">
                 <div class="bounce1"></div>

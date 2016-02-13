@@ -31,13 +31,18 @@ document.addEventListener("DOMContentLoaded", function (){
       $("#ImportProgress")[0].value = mesg.data;
     };
 
+    $("#StartImport").prop( "disabled", true);
+    $("#ResetImport").prop( "disabled", true);
+
     $.get("/import/nbLines", function( data ) {
         $("#ImportProgress")[0].max = data;
     });
 
     //Iniitialize the current import state
 //    $.get("/import/nbCurrentLines", function( data ) {
-//        $("#ImportProgress")[0].value = data;
+        $("#StartImport").prop( "disabled", false);
+        $("#ResetImport").prop( "disabled", false);
+//      $("#ImportProgress")[0].value = data;
 //    });
 
     $("#StartImport").click(startImport);

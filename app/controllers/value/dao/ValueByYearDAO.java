@@ -8,6 +8,8 @@ import play.Logger;
 import play.db.DB;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.Year;
 import java.util.*;
 
 /**
@@ -45,8 +47,9 @@ public class ValueByYearDAO {
         Map<Integer, Long> map = new TreeMap<>();
         try(Connection conn = connectionFactory.getConnection()){
 
+            Long millisInYear  = Year.of(year).isLeap()?  MILLIS_IN_YEAR + MILLIS_IN_DAY : MILLIS_IN_YEAR;
             Long lowerBound = (year-1970) * MILLIS_IN_YEAR;
-            Long upperBound = lowerBound + MILLIS_IN_YEAR;
+            Long upperBound = lowerBound + millisInYear;
             final PreparedStatement statement = conn.prepareStatement("WITH series AS ("
             +" SELECT generate_series("+lowerBound+" , "+(upperBound - MILLIS_IN_DAY)+", "+MILLIS_IN_DAY+") AS r_from),"
             +" range AS (SELECT r_from, (r_from + "+(MILLIS_IN_DAY - 1)+") AS r_to FROM series)"
