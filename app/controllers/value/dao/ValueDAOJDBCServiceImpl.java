@@ -17,16 +17,25 @@ public class ValueDAOJDBCServiceImpl implements ValueConsumer {
     private PreparedStatement psInsert;
 
     public ValueDAOJDBCServiceImpl() {
+        setPreparedStatement();
+    }
+
+    private void setPreparedStatement() {
         try {
             psInsert = connection.prepareStatement("insert into value(timestamp, value, country) values( ?,?,?)");
         } catch (SQLException e) {
-            Logger.error("Method called on a closed conmnection.");
+            Logger.error("Method called on a closed connection.");
         }
+    }
+
+    public void setConnection(Connection conn){
+        this.connection = conn;
+        setPreparedStatement();
     }
 
     @Override
     public void saveValue(Value val) {
-
+        if (val != null)
         try {
             psInsert.setLong(1, val.timestamp);
             psInsert.setLong(2, val.value);
@@ -35,6 +44,10 @@ public class ValueDAOJDBCServiceImpl implements ValueConsumer {
         } catch (SQLException e) {
             Logger.error("Eroor during adding of value "+val, e);
         }
+    }
+
+    public PreparedStatement getPsInsert() {
+        return psInsert;
     }
 
     @Override

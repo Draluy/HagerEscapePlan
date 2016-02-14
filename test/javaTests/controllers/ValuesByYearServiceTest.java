@@ -1,4 +1,4 @@
-package javaTests;
+package javaTests.controllers;
 
 import controllers.value.dao.ValueByYearDAO;
 import controllers.year.ValuesByYearService;

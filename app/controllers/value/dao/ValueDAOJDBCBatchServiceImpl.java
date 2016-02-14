@@ -6,6 +6,7 @@ import play.db.DB;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -26,6 +27,7 @@ public class ValueDAOJDBCBatchServiceImpl implements ValueConsumer {
 
     @Override
     public void saveValue(Value val) {
+        if(val != null)
         try {
             psInsert.setLong(1, val.timestamp);
             psInsert.setLong(2, val.value);
@@ -48,5 +50,20 @@ public class ValueDAOJDBCBatchServiceImpl implements ValueConsumer {
     @Override
     public void doAtTheEnd() {
         doPeriodically();
+    }
+
+    public Long getCount(){
+        try {
+            final ResultSet resultSet = connection.createStatement().executeQuery("select count(*) as count from VALUE");
+            resultSet.next();
+            return resultSet.getLong(1);
+        } catch (SQLException e) {
+            Logger.error("Could not retrieve the number of lines of a table.");
+        }
+        return -1L;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 }

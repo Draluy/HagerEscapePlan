@@ -1,8 +1,10 @@
 package controllers.iimport;
 
+import play.Configuration;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
 import static play.libs.Json.toJson;
@@ -11,10 +13,10 @@ import static play.libs.Json.toJson;
  * Created by dralu on 2/5/2016.
  */
 public class ImportControllerImpl extends Controller implements ImportController {
-
     private static Long offset = 0L;
 
-    private final ImportService importService = new ImportService();
+    private ImportService importService = new ImportService();
+
 
     @Override
     public Result start() {
@@ -53,7 +55,5 @@ public class ImportControllerImpl extends Controller implements ImportController
     public Result getCurrentNbLines() {
         return ok(String.valueOf(importService.getCurrentLineCount()));
     }
-
-
 
 }

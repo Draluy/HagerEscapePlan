@@ -1,4 +1,4 @@
-package javaTests;
+package javaTests.controllers;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -19,17 +19,23 @@ import com.google.common.jimfs.Jimfs;
 import com.typesafe.config.ConfigFactory;
 import controllers.iimport.ImportService;
 import controllers.iimport.ImportWebsocketActor;
+import controllers.value.dao.ValueDAOJDBCBatchServiceImpl;
+import controllers.value.dao.ValueDAOJDBCServiceImpl;
 import org.junit.*;
 
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.util.reflection.Whitebox;
 import play.Application;
 import play.db.DB;
 import play.db.Database;
 import play.db.Databases;
 import play.db.evolutions.Evolutions;
 import play.inject.guice.GuiceApplicationBuilder;
+import play.test.FakeApplication;
+import play.test.Helpers;
+import play.test.WithApplication;
 import play.twirl.api.Content;
 
 import static play.inject.Bindings.bind;
@@ -42,10 +48,16 @@ import static org.junit.Assert.*;
 * If you are interested in mocking a whole application, see the wiki for more details.
 *
 */
-public class ImportServiceTest {
+public class ImportServiceTest extends WithApplication {
 
     private ImportService importService;
+    private Database database;
 
+    @Override
+    protected FakeApplication provideFakeApplication() {
+        return new FakeApplication(new java.io.File("."), Helpers.class.getClassLoader(),
+                new HashMap<String, Object>(), new ArrayList<String>(), null);
+    }
 
     static class MyActor extends UntypedActor {
         public void onReceive(Object o) throws Exception {
@@ -60,8 +72,6 @@ public class ImportServiceTest {
 
     @Test
     public void demonstrateTestActorRef() {
-
-
         final TestActorRef<MyActor> ref = TestActorRef.create(ActorSystem.create(), Props.create(MyActor.class), "testA");
         final MyActor actor = ref.underlyingActor();
         assertTrue(actor.testMe());
@@ -70,23 +80,21 @@ public class ImportServiceTest {
 
 
     @Before
-    public void before () {
-        MockitoAnnotations.initMocks(this);
-        importService = new ImportService();
+    public void before() throws SQLException {
+        database =Databases.inMemory();
+        database.getConnection().setAutoCommit(true);
+        Evolutions.applyEvolutions(database);
         ImportWebsocketActor.out = TestActorRef.create(ActorSystem.create(), Props.create(MyActor.class), "testA");
+        importService = new ImportService();
     }
 
-
-    @After
-    public void shutdownDatabase() throws SQLException {
-
+    @After public void after(){
+        Evolutions.cleanupEvolutions(database);
+        database.shutdown();
     }
 
     @Test
     public void testImport() throws IOException, SQLException {
-        Database database = Databases.inMemory("default");
-        database.getConnection().setAutoCommit(true);
-        Evolutions.applyEvolutions(database);
 
         Application application = new GuiceApplicationBuilder()
                 .overrides(bind(Database.class).toInstance(database)
@@ -134,20 +142,9 @@ public class ImportServiceTest {
                 }
 
 
-                Assert.assertEquals(27, ImportService.getCurrentLineCount());
+                Assert.assertEquals(27, importService.getCurrentLineCount());
 
             }
         });
-        Evolutions.cleanupEvolutions(database);
-        database.shutdown();
     }
-
-    @Test
-    public void renderTemplate() {
-        Content html = views.html.index.render();
-        assertEquals("text/html", contentType(html));
-        assertTrue(contentAsString(html).contains("Your new application is ready."));
-    }
-
-
 }

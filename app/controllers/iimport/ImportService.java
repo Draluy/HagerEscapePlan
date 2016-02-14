@@ -24,7 +24,7 @@ import play.db.DB;
 public class ImportService {
 
     private FileSystem filesystem = FileSystems.getDefault();
-    private ValueConsumer valueDAOService = new ValueDAOJDBCBatchServiceImpl();
+    private ValueDAOJDBCBatchServiceImpl valueDAOService = new ValueDAOJDBCBatchServiceImpl();
     private ValueCounter valueCounter = new ValueCounter();
 
     private static boolean stopImport = false;
@@ -78,6 +78,8 @@ public class ImportService {
         } finally {
             importRunning = false;
         }
+        valueDAOService.doAtTheEnd();
+        valueCounter.doAtTheEnd();
         ImportWebsocketActor.out.tell(String.valueOf(offset + currentOffset), ImportWebsocketActor.out);
         return offset + currentOffset;
     }
@@ -120,9 +122,8 @@ public class ImportService {
         this.filesystem = filesystem;
     }
 
-    public static long getCurrentLineCount() {
-        SqlQuery down = Ebean.createSqlQuery("select count(*) as count from VALUE");
-        return down.findList().get(0).getLong("count");
+    public long getCurrentLineCount() {
+        return valueDAOService.getCount();
     }
 
     public List<Sum> getValuesByCountry(){
