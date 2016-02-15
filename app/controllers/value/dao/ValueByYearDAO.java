@@ -33,7 +33,9 @@ public class ValueByYearDAO {
             final Statement statement = conn.createStatement();
             final ResultSet resultSet = statement.executeQuery("select min(timestamp), max(timestamp) from value");
             if (resultSet.next()) {
-                result = new Long[]{resultSet.getLong(1), resultSet.getLong(2)};
+                if (resultSet.getObject(1) != null && resultSet.getObject(2) != null) {
+                    result = new Long[]{resultSet.getLong(1), resultSet.getLong(2)};
+                }
                 resultSet.close();
             }
         }

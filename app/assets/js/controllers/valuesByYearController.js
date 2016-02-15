@@ -132,6 +132,14 @@ document.addEventListener("DOMContentLoaded", function (){
         });
     };
 
+    var loadIfEmpty = function(){
+        var nbItems = $('#years')[0].options.length;
+        if (nbItems === 0){
+            refreshValues();
+        }
+    };
+
+    $("#years").click(loadIfEmpty);
     $("#RefreshYearsValues").click(refreshValues);
     $("#go").click(displayGraph);
 

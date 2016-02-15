@@ -113,8 +113,9 @@ public class ImportService {
         try (Connection conn = DB.getConnection()){
             down = conn.createStatement();
             down.execute("TRUNCATE TABLE VALUE");
+            down.execute("TRUNCATE TABLE SUM");
         } catch (SQLException e) {
-            Logger.error("Could not truncate the table");
+            Logger.error("Could not truncate a table", e);
         }
     }
 

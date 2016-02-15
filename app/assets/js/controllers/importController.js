@@ -20,9 +20,13 @@ document.addEventListener("DOMContentLoaded", function (){
 
     var resetImport = function(e){
       $("#ResetImport").prop( "disabled", true );
+      $("#StartImport").prop( "disabled", true );
+      $("#PauseImport").prop( "disabled", true );
       $.get( "import/reset", function( data ) {
         $("#ImportProgress")[0].value = data;
         $("#ResetImport").prop( "disabled", false );
+        $("#StartImport").prop( "disabled", false );
+        $("#PauseImport").prop( "disabled", false );
         console.log("Import resetted");
       });
     };

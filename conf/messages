@@ -9,7 +9,7 @@ menu.import=Import Data
 menu.sums=Total by Country
 
 values.by.country=Values by country
-sum.button.refresh=Refresh with default values
+sum.button.refresh=Refresh
 sum.country=Country
 sum.value=Total Sum
 values.by.country.intro=Here are presented the sum of the values of each country.

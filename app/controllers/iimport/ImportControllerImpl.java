@@ -25,7 +25,7 @@ public class ImportControllerImpl extends Controller implements ImportController
             offset = importService.startImport(offset);
             return ok(String.valueOf(offset));
         } catch (IOException e) {
-            return internalServerError(e.getMessage());
+            return internalServerError("Error while reading the file  " + e.getMessage());
         }
     }
 
