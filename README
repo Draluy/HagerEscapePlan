@@ -1,3 +1,30 @@
+INSTALLATION INSTRUCTIONS
+
+To make the software work you will need a postgresql server, and the data.txt file.
+
+Please do the following steps IN ORDER
+1 - Unzip the release in the folder of your choice
+2 - Check in the application.conf file that the values to connect to your instance of postgresql are correct. Adjust if needed.
+3 - Start a Postgresql server version 9.1 or higher. I used the default port 5432.
+4 - In the bin folder, create a folder named "data" and put the unzipped data.txt file on it. The Path of the file should look like this: c:\<yourfolder>\hep-1.0-SNAPSHOT\bin\data\data.txt
+5 - In the bin folder, launch hep or hep.bat depending on the OS.
+
+Go to the url http://localhost:9000/tests. If all the tests have the value true, then you are ready to go and can start browsing at the address http://localhost:9000.
+If one line ends with "false", then one dependency has not been found and the website is not functional.
+In the event that the databse server is not running, the screen will be filled with a play stacktrace indicating that a connection could not be made.
+
+BUGS CONNUS (Oui c'est en francais)
+
+Import:
+- Faire F5 prendant un import voit le bouton Play degrise, et non pas le bouton Pause. Apputer sur Play regle le probleme. La base reste coherente.
+
+H2:
+- La base consomme beaucoup de RAM, et les performances ont tendance a s'amoindrir au fur et a mesure de l'import.
+
+Postgresql:
+- Pgsql met du temps a recuperer le nombre de lignes de la base, la requete nbCurrentLines peut donc prendre du temps.
+
+
 Le projet se découpe en 2 parties.
 
 En entrée, il y a un fichier de données disponible ici (~500 Mo) :
@@ -24,17 +51,4 @@ Partie web :
 - Pouvoir choisir la granularité sur le chart (jour, semaine, mois, année)
 - Pouvoir choisir une source qui sera représentée par une 2eme courbe sur le chart, reprenant les mêmes fonctionnalités mais qui représente uniquement les valeurs de cette source.
 
-pk play
-pk h2
 
-Bugs et problemes connus:
-
-
-Import:
-- Faire F5 prendant un import voit le bouton Play degrise, et non pas le bouton Pause. Apputer sur Play regle le probleme. La base reste coherente.
-
-H2:
-- La base consomme beaucoup de RAM, et les performances ont tendance a s'amoindrir au fur et a mesure de l'import.
-
-Postgresql:
-- Pgsql met du temps a recuperer le nombre de lignes de la base, la requete nbCurrentLines peut donc prendre du temps.

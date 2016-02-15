@@ -29,7 +29,7 @@ public class ImportService {
 
     private static boolean stopImport = false;
     private static boolean importRunning = false;
-    private static Path DATA_FILE = Paths.get("data/data.txt");
+    public static Path DATA_FILE = Paths.get("data/data.txt");
 
     /**
      * Import the file in the database
