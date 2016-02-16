@@ -139,10 +139,19 @@ document.addEventListener("DOMContentLoaded", function (){
         }
     };
 
+    var disablePeriod = function(disable){
+       return function(){
+           $("#lowerbound").prop( "disabled", disable );
+           $("#upperbound").prop( "disabled", disable );
+           $("#years").prop( "disabled", !disable );
+       };
+    };
+
     $("#years").click(loadIfEmpty);
     $("#RefreshYearsValues").click(refreshValues);
     $("#go").click(displayGraph);
-
+    $("#yearradio").click(disablePeriod(true));
+    $("#periodradio").click(disablePeriod(false));
     //Call once at the page loading
     refreshValues();
 

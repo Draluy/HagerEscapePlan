@@ -1,4 +1,6 @@
-@pink: rgba(255, 255, 255, 0.55);
+@border-color: rgba(255, 255, 255, 0.55);
+@background-default-color: rgba(255, 255, 255, 0.55);
+@button-as-cell-color: rgba(100, 100, 100, 0.8);
 
 progress{
     width:100%;
@@ -27,12 +29,12 @@ div.sumvalues{
         color: white;
 
         .sumvalue{
-            border-left: 1px solid @pink;
+            border-left: 1px solid @border-color;
         }
     }
 
     .sumrow:not(:last-child){
-        border-bottom: 1px solid @pink;
+        border-bottom: 1px solid @border-color;
     }
 }
 
@@ -59,13 +61,28 @@ div.actions{
     flex-direction: row;
     align-items: center;
     margin-bottom: 2em;
-    select {
+    select, input[type="datetime-local"] {
         flex:1;
         margin:0px 1em;
         min-width: 5em;
     }
     label{
         margin: 0;
+    }
+    div{
+        display: flex;
+        flex-direction: row;
+        flex: 1
+    }
+    div.horizontal{
+        flex-direction : row
+        flex: 1;
+        margin-bottom: 1em;
+    }
+
+    div.vertical{
+        flex-direction : column;
+        height: 8em;
     }
 }
 
@@ -119,4 +136,53 @@ div.actions{
     -webkit-transform: scale(1.0);
     transform: scale(1.0);
   }
+}
+.input-picker .picker-list{
+
+}
+// Fix polyfill for datetime picker
+
+span.input-buttons{
+    width: 2.5em;
+    height: 2.5em;
+    button{
+        width: 2.5em;
+        height: 2.5em;
+    }
+}
+
+span.step-controls{
+    display : none;
+}
+
+div.ws-popover {
+    .ws-po-box{
+        border-radius: 5px;
+        background-color: @background-default-color;
+
+        .ws-button-row {
+            border-top: none;
+            & > button{
+                height: auto;
+                background-color : @button-as-cell-color;
+            }
+        }
+
+         .ws-picker-body {
+            .picker-list{
+                background-color: transparent;
+            }
+            td > button{
+                background-color : @button-as-cell-color;
+                border-radius: 0;
+                height: auto;
+            }
+         }
+
+    }
+
+    //I overrode this behavior earlier, lets revert it for this code
+    div {
+        display: block;
+    }
 }
