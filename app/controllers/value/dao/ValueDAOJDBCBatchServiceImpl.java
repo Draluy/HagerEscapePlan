@@ -11,6 +11,8 @@ import java.sql.SQLException;
 
 /**
  * Created by dralu on 2/10/2016.
+ * Inserts values in the database using the batch jdbc API.
+ * JPA Annotations are nice, but the ebean ORM is not fast and/or customizable enough for big inserts.
  */
 public class ValueDAOJDBCBatchServiceImpl implements ValueConsumer {
 
@@ -25,19 +27,26 @@ public class ValueDAOJDBCBatchServiceImpl implements ValueConsumer {
         }
     }
 
+    /**
+     * Saves a value in the database. Puts it in memory. Data is flushed when calling doPeriodically.
+     * @param val The value to insert.
+     */
     @Override
     public void saveValue(Value val) {
         if(val != null)
         try {
-            psInsert.setLong(1, val.timestamp);
-            psInsert.setLong(2, val.value);
-            psInsert.setString(3, val.country);
+            psInsert.setLong(1, val.getTimestamp());
+            psInsert.setLong(2, val.getValue());
+            psInsert.setString(3, val.getCountry());
             psInsert.addBatch();
         } catch (SQLException e) {
             Logger.error("Eroor during adding of value "+val, e);
         }
     }
 
+    /**
+     * Flush the batched data.
+     */
     @Override
     public void doPeriodically() {
         try {
@@ -47,11 +56,18 @@ public class ValueDAOJDBCBatchServiceImpl implements ValueConsumer {
         }
     }
 
+    /**
+     * Flush the batched data. Name change so the calling code is more explicit.
+     */
     @Override
     public void doAtTheEnd() {
         doPeriodically();
     }
 
+    /**
+     * Get the count of all rows in the table. This is very slow with pgsql.
+     * @return The number of lines in the database.
+     */
     public Long getCount(){
         try {
             final ResultSet resultSet = connection.createStatement().executeQuery("select count(*) as count from VALUE");
@@ -63,6 +79,10 @@ public class ValueDAOJDBCBatchServiceImpl implements ValueConsumer {
         return -1L;
     }
 
+    /**
+     * Setter for the connection, for testability
+     * @param connection
+     */
     public void setConnection(Connection connection) {
         this.connection = connection;
     }

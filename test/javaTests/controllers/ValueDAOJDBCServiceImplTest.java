@@ -63,10 +63,7 @@ public class ValueDAOJDBCServiceImplTest  extends WithApplication {
 
     @Test
     public void testSaveValue() throws SQLException {
-        Value value = new Value();
-        value.country="France";
-        value.timestamp = 1L;
-        value.value = 2L;
+        Value value = new Value(1L, 2L, "France");
         valueDAOJDBCService.saveValue(value);
 
         ResultSet resultSet = database.getConnection().createStatement().executeQuery("select * from value");

@@ -20,6 +20,7 @@ import play.db.DB;
 
 /**
  * Created by dralu on 2/6/2016.
+ * Gets the data to and from the DAO
  */
 public class ImportService {
 
@@ -41,6 +42,13 @@ public class ImportService {
         return startImport(offset, DATA_FILE);
     }
 
+    /**
+     * Will import all the lines of the specified file into the database
+     * @param offset The offset to start the import from
+     * @param file The file that has the data to import
+     * @return The offset where the import ended
+     * @throws IOException
+     */
     public long startImport(long offset, Path file) throws IOException {
 
         if (importRunning) {
@@ -51,6 +59,7 @@ public class ImportService {
         importRunning = true;
         long currentOffset = 0L;
 
+        //Open the file
         try (InputStream in = Files.newInputStream(file);
              BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         ) {
@@ -62,14 +71,17 @@ public class ImportService {
                 br.readLine();
             }
 
+            //For each subsequent line, save into the database
             while ((line = br.readLine()) != null && !stopImport) {
                 Value value = getValueFromString(line);
+                //Save into the database
                 valueDAOService.saveValue(value);
+                //Aggregate the value for each country
                 valueCounter.saveValue(value);
 
                 currentOffset++;
                 if (currentOffset % 10000 == 0) {
-                    //Notify the front
+                    //Notify the front from time to time
                     ImportWebsocketActor.out.tell(String.valueOf(offset + currentOffset), ImportWebsocketActor.out);
                     valueDAOService.doPeriodically();
                     valueCounter.doPeriodically();
@@ -77,22 +89,24 @@ public class ImportService {
             }
         } finally {
             importRunning = false;
+            valueDAOService.doAtTheEnd();
+            valueCounter.doAtTheEnd();
+            ImportWebsocketActor.out.tell(String.valueOf(offset + currentOffset), ImportWebsocketActor.out);
         }
-        valueDAOService.doAtTheEnd();
-        valueCounter.doAtTheEnd();
-        ImportWebsocketActor.out.tell(String.valueOf(offset + currentOffset), ImportWebsocketActor.out);
         return offset + currentOffset;
     }
 
+    //Create a Value from a string read from the file
+    //TODO Move this to a factory
     private Value getValueFromString(String line) {
         String[] tokens = line.split(",");
-        Value value = new Value();
-        value.timestamp = Long.valueOf(tokens[0]);
-        value.value = Long.valueOf(tokens[1]);
-        value.country = tokens[2];
+        Value value = new Value(Long.valueOf(tokens[0]),
+                Long.valueOf(tokens[1]),
+                tokens[2]);
         return value;
     }
 
+    //Read the number of lines to import. Not very fast. Can be made faster using br.readLine() but not by much.
     public long getLineCount() {
         try (Stream<String> lines = Files.lines(DATA_FILE)) {
             return lines.count();
@@ -103,15 +117,21 @@ public class ImportService {
     }
 
 
+    /**
+     * Pauses the import
+     */
     public void pauseImport() {
         stopImport = true;
     }
 
+    /**
+     * Stops the import and empties the database.
+     * Can be time consuming.
+     */
     public void resetImport() {
         stopImport = true;
-        Statement down = null;
-        try (Connection conn = DB.getConnection()){
-            down = conn.createStatement();
+        try (Connection conn = DB.getConnection();
+            Statement down = conn.createStatement();){
             down.execute("TRUNCATE TABLE VALUE");
             down.execute("TRUNCATE TABLE SUM");
         } catch (SQLException e) {

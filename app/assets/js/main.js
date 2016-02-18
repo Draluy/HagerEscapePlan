@@ -1,8 +1,10 @@
 hep={};
 
-
-
 (function (){
+
+    //call the polyfill for html5 forms
+    webshim.polyfill('forms forms-ext');
+
     //Take care of the websocket
     var ws = new WebSocket("ws://localhost:9000/ws");
 
@@ -20,6 +22,5 @@ hep={};
     hep.ws = ws;
 
 
-    //call the polyfill for html5 forms
-    webshim.polyfill('forms forms-ext');
+
 })();

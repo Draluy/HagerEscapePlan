@@ -17,12 +17,10 @@ GET     /import/start               controllers.iimport.ImportControllerImpl.sta
 GET     /sums/getValuesByCountry    controllers.sum.SumValueController.getValues()
 GET     /sums/getSumTemplate        controllers.sum.SumValueController.getSumTemplate()
 
-# Value controller
-GET     /value/:id                  controllers.value.ValueController.getValue(id: Long)
-
 # Values by year
 GET     /valuesbyyear/years         controllers.year.ValuesByYearController.getYears()
 GET     /valuesbyyear/:year         controllers.year.ValuesByYearController.getValues(year: Integer)
+POST    /valuesbyperiod             controllers.year.ValuesByYearController.getValuesByPeriod()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

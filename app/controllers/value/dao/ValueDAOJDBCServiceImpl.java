@@ -10,7 +10,9 @@ import java.sql.SQLException;
 
 /**
  * Created by dralu on 2/10/2016.
+ * Old naive DAO class. Not used anymore.
  */
+@Deprecated
 public class ValueDAOJDBCServiceImpl implements ValueConsumer {
 
     private Connection connection = DB.getConnection();
@@ -37,9 +39,9 @@ public class ValueDAOJDBCServiceImpl implements ValueConsumer {
     public void saveValue(Value val) {
         if (val != null)
         try {
-            psInsert.setLong(1, val.timestamp);
-            psInsert.setLong(2, val.value);
-            psInsert.setString(3, val.country);
+            psInsert.setLong(1, val.getTimestamp());
+            psInsert.setLong(2, val.getValue());
+            psInsert.setString(3, val.getCountry());
             psInsert.execute();
         } catch (SQLException e) {
             Logger.error("Eroor during adding of value "+val, e);

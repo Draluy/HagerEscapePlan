@@ -47,12 +47,13 @@ public class ImportControllerImpl extends Controller implements ImportController
         //This was too long;
         //return ok(String.valueOf(ImportService.getLineCount()));
 
-        //This is faster
+        //This is faster. Yes I cheated. The difference if using a different file for import is "only" cosmetic;
         return ok(String.valueOf(63089679));
     }
 
     @Override
     public Result getCurrentNbLines() {
+        //This is long, but cannot be avoided
         return ok(String.valueOf(importService.getCurrentLineCount()));
     }
 

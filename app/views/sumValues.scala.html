@@ -8,8 +8,8 @@
     </header>
     @for(sum <- sumvalues) {
     <div class="sumrow">
-        <div class="country">@sum.country</div>
-        <div class="sumvalue">@sum.valueSum</div>
+        <div class="country">@sum.getCountry()</div>
+        <div class="sumvalue">@sum.getValueSum()</div>
     </div>
     }
 </div>

@@ -24,6 +24,7 @@
     <script src='@routes.Assets.versioned("js/utils/DateUtils.js")' type="text/javascript"></script>
     <script src='@routes.Assets.versioned("js/controllers/importController.js")' type="text/javascript"></script>
     <script src='@routes.Assets.versioned("js/controllers/sumValuesController.js")' type="text/javascript"></script>
+    <script src='@routes.Assets.versioned("js/utils/ChartDatastoreFactory.js")' type="text/javascript"></script>
     <script src='@routes.Assets.versioned("js/controllers/valuesByYearController.js")' type="text/javascript"></script>
 </head>
 <body>
@@ -78,8 +79,9 @@
                 <li>
                     <button id="RefreshValues">&#8635; @Messages.get("sum.button.refresh")</button>
                 </li>
+                <!-- Not enough time to implement this :(
                 <li><input type="checkbox" id="filtercbx" value="filtercbx"/><label for="filtercbx">@Messages.get("sum.filter.according.to.valuesbyyear")</label>
-                </li>
+                </li> //-->
             </ul>
             <div id="sums" class="features">
 
@@ -132,7 +134,7 @@
                     <button id="go">@Messages.get("values.per.year.go")</button>
                 </div>
             </div>
-            <canvas id="valuesbyyeargraph"></canvas>
+            <div id="valuesbyyeargraph" ></div>
         </div>
     </section>
 

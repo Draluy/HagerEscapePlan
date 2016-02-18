@@ -2,78 +2,6 @@ hep.valuesbyyear={};
 
 document.addEventListener("DOMContentLoaded", function (){
 
-    //Create an inner object that creates the datastore of the graph
-    (function (){
-        var getDaysArray = function (year, granularity){
-            var daysArray = [];
-            var i;
-            var nbDays;
-            switch (granularity) {
-                case "day":
-                   nbDays = hep.dateutils.nbDaysInYear(year);
-                   for(i = 0;i<nbDays;i++){
-                       daysArray.push(1);
-                   }
-                break;
-                case "week":
-                    var weeksInYear = 52;
-                    for(i = 0;i<weeksInYear;i++){
-                        daysArray.push(7);
-                    }
-                    nbDays = hep.dateutils.nbDaysInYear(year);
-                    daysArray.push(nbDays-(weeksInYear*7));
-                break;
-                case "month":
-                    for(i = 0;i<12;i++){
-                        daysArray.push(hep.dateutils.nbDaysInMonth(year,i));
-                    }
-                break;
-                case "year":
-                    daysArray.push(hep.dateutils.nbDaysInYear(year));
-                break;
-            }
-            return daysArray;
-        };
-
-        var applyGranularity = function(data,granularity){
-            var daysArray = getDaysArray(hep.valuesbyyear.year,granularity);
-            var sumArray = [];
-            var k = 0;
-            for(var i = 0;i<daysArray.length;i++){
-                data.labels.push(i+1);
-
-                var valuesSum = 0;
-                for(var j = 0;j<daysArray[i];j++, k++){
-                    valuesSum += data.datasets[0].data[k];
-                }
-                sumArray.push(valuesSum);
-
-            }
-            data.datasets[0].data = sumArray;
-            return data;
-        };
-
-        hep.valuesbyyear.chartsJsDataCreator = {
-            getChartData : function(serverData, granularity){
-                var data = {
-                labels: [],
-                datasets: [
-                    {
-                        label: "Values by "+granularity,
-                        backgroundColor: "rgba(255,255,255,0.5)",
-                        borderColor: "rgba(255,255,255,0.8)",
-                        hoverBackgroundColor: "rgba(255,255,255,0.75)",
-                        hoverBorderColor: "rgba(255,255,255,1)",
-                        data: serverData
-                    }
-                ]
-                };
-
-              return applyGranularity(data,granularity);
-            }
-        };
-    })();
-
     var refreshValues = function(){
      $.get("/valuesbyyear/years", function( data ) {
             var docFragment = document.createDocumentFragment();
@@ -86,8 +14,6 @@ document.addEventListener("DOMContentLoaded", function (){
         });
     };
 
-
-
     var enableControls = function(status){
         $("#years").prop("disabled", !status);
         $("#granularity").prop("disabled", !status);
@@ -99,27 +25,50 @@ document.addEventListener("DOMContentLoaded", function (){
         }
     };
 
-    var changeGraphValues = function(data){
-        var canvas = $("#valuesbyyeargraph").get(0);
-        var ctx = canvas.getContext("2d");
+    //Add the canvas to the page, or get the context of the already included canvas
+    var getCtx = function(){
+        var ctx;
+        var div = $("#valuesbyyeargraph").get(0);
+
+        if (!$("#valuesbyyeargraph").html()){
+            var canvas = document.createElement('canvas');
+            canvas.width = div.clientWidth;
+            canvas.height = div.clientHeight;
+            $("#valuesbyyeargraph").html(canvas);
+
+            ctx = canvas.getContext("2d");
+        }else{
+            ctx = $("#valuesbyyeargraph canvas")[0].getContext("2d");
+        }
+        return ctx;
+    };
+
+    var changeGraphValues = function(data,lowerDate, upperDate){
+
+
+        //Add the canvas to the page. If not done dinamically, chrome barfs all over it
+        var ctx = getCtx();
+
         var granularity = $("#granularity").val();
 
         if (hep.valuesbyyear.graphByYear){
             hep.valuesbyyear.graphByYear.destroy();
         }
-        hep.valuesbyyear.graphByYear = Chart.Bar(ctx, {
-            data: hep.valuesbyyear.chartsJsDataCreator.getChartData(data, granularity)
+
+        hep.valuesbyyear.graphByYear = Chart.Line(ctx, {
+            data: hep.cdf.chartsJsDataCreator.getChartData(data, granularity, lowerDate, upperDate)
         });
+
     };
 
-    var displayGraph = function(){
-        var year = $("#years").val();
+    //Its up the this function to display the graph by year and reenable the controls
+    var displayGraphByYear  = function (year){
 
-        enableControls(false);
-
+        var lowerDate = new Date(Date.UTC(parseInt(year),0,1));
+        var upperDate = new Date(Date.UTC(parseInt(year)+1,0,1));
         if (hep.valuesbyyear.year === year){
             enableControls(true);
-            changeGraphValues(hep.valuesbyyear.data);
+            changeGraphValues(hep.valuesbyyear.data, lowerDate, upperDate);
             return;
         }
 
@@ -127,9 +76,34 @@ document.addEventListener("DOMContentLoaded", function (){
             hep.valuesbyyear.year = year;
             hep.valuesbyyear.data = data;
 
-            changeGraphValues(data);
+            changeGraphValues(data, lowerDate, upperDate);
             enableControls(true);
         });
+    };
+
+    //Display the graph of a certain period and reenable the controls
+    var displayGraphByPeriod  = function(lower, upper){
+        $.post("/valuesbyperiod",{ lowerbound: lower, upperbound: upper })
+        .done(function(data) {
+            hep.valuesbyyear.data = data;
+
+            changeGraphValues(data, new Date(lower), new Date(upper));
+            enableControls(true);
+        });
+    };
+
+    var displayGraph = function(){
+
+        enableControls(false);
+
+        if($('#yearradio').is(':checked')){
+            var year = $("#years").val();
+            displayGraphByYear(year);
+        }else{
+            var lower = $("#lowerbound").val();
+            var upper = $("#upperbound").val();
+            displayGraphByPeriod(lower, upper);
+        }
     };
 
     var loadIfEmpty = function(){

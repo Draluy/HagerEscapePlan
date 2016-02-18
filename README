@@ -13,43 +13,26 @@ Go to the url "http://localhost:9000/tests". If all the tests have the value tru
 If one line ends with "false", then one dependency has not been found and the website is not functional.
 In the event that the databse server is not running, the screen will be filled with a play stacktrace indicating that a connection could not be made.
 
-BUGS CONNUS (Oui c'est en francais)
+KNOWN BUGS/PROBLEMS
 
-Import:
-- Faire F5 prendant un import voit le bouton Play degrise, et non pas le bouton Pause. Apputer sur Play regle le probleme. La base reste coherente.
+- The Polyfill for local datetime inputs does not work on chrome. Works on firefox, IE. Not enough time to fix this :(, sry.
+- F5 during import will show the play button instead of the pause button
+- The count(*) request is horrendously slow using postgresql.
+- Javascript and css files are not minifed/obfuscated
+- Graphs do not fetch the data from the DB if you only change granularity. This is by design, but can be misleading during import.
+- The years you can choose from is populated either on page load, or if empty on first click and does not get refreshed after. Same misleading beahavior as above.
 
-Postgresql:
-- Pgsql met du temps a recuperer le nombre de lignes de la base, la requete nbCurrentLines peut donc prendre du temps.
+TECHNICAL CHOICES
 
-TODO:
-- Allow to chose an arbitrary period of time for the graph
-- Pass the values to the table above
+Play has:
+ - a known hierarchy of files, to makes reading code easier
+ - a built-in packaging system
+ - a built-in http server
+ - a websocket handler
+ - an ORM (not really used but still)
+ - not been used on one of my previous projects. I like to learn.
 
+NOTES
 
-Le projet se découpe en 2 parties.
-
-En entrée, il y a un fichier de données disponible ici (~500 Mo) :
-http://dl.dropbox.com/u/10242169/data.txt.zip
-
-Tu peux le déziper à la main pour l'exercice.
-Il contient 3 données par ligne :
-- Un timestamp
-- Une valeur (entre 0 et 100)
-- Une origine (nom de pays)
-
-Partie batch, voici les feature à implémenter :
-- Intégrer le fichier de données dans une base de données.
-- Le batch si interrompu doit être capable de reprendre là où il s'était arrêté.
-
-Partie web :
-- Etre capable de lancer le batch
-- Etre capable d'afficher un état d'avancement pendant l'exécution du batch (ça peut nécessiter des modifications dans le batch pour exposer des choses)
-- Afficher un tableau qui affiche la somme des valeurs par source de données.
-- Représenter les données de la base dans un chart qui trace une courbe en fonction de la somme des valeurs d'une journée (toute source confondue) et du temps sur une période d'un an (granularité au jour).
-- Etre capable de naviguer d'une année à l'autre pour le chart.
-- Filtrer le contenu du tableau sur la période active dans le chart
-- Pouvoir choisir une période au choix.
-- Pouvoir choisir la granularité sur le chart (jour, semaine, mois, année)
-- Pouvoir choisir une source qui sera représentée par une 2eme courbe sur le chart, reprenant les mêmes fonctionnalités mais qui représente uniquement les valeurs de cette source.
-
-
+If this was really a final client I would have said to him that there is not enough time to do the project. And probably a boring thing like a servlet on tomcat.
+I tried to chose the best balance between number of features, quality of code, and fun; I hope you agree with my choices.

@@ -14,6 +14,9 @@ import java.util.List;
 
 import static play.libs.Json.toJson;
 
+/**
+ * This is the entry point, this controller renders the index and holds the only websocket of the application
+ */
 public class Application extends Controller {
 
     public Result index() {
