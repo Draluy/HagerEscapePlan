@@ -3,7 +3,7 @@ INSTALLATION INSTRUCTIONS
 To make the software work you will need a postgresql server version 9.1 or higher, and the data.txt file.
 
 Please do the following steps IN ORDER
-1 - Unzip the release in the folder of your choice
+1 - Unzip the release in the folder of your choice, not too deep in the filesystem, at least on windows.
 2 - Check in the application.conf file that the values to connect to your instance of postgresql are correct. Adjust if needed.
 3 - Start the Postgresql server. I used the default port 5432.
 4 - In the bin folder, create a folder named "data" and put the unzipped data.txt file on it. The Path of the file should look like this: c:\<yourfolder>\hep-1.0-SNAPSHOT\bin\data\data.txt
@@ -11,7 +11,7 @@ Please do the following steps IN ORDER
 
 Go to the url "http://localhost:9000/tests". If all the tests have the value true, then you are ready to go and can start browsing at the address http://localhost:9000.
 If one line ends with "false", then one dependency has not been found and the website is not functional.
-In the event that the databse server is not running, the screen will be filled with a play stacktrace indicating that a connection could not be made.
+In the event that the databse server is not running, the screen may be filled with a play stacktrace indicating that a connection could not be made.
 
 KNOWN BUGS/PROBLEMS
 
