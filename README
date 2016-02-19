@@ -15,12 +15,12 @@ In the event that the databse server is not running, the screen will be filled w
 
 KNOWN BUGS/PROBLEMS
 
-- The Polyfill for local datetime inputs does not work on chrome. Works on firefox, IE. Not enough time to fix this :(, sry.
+- The datepicker displays some things in the browser language.
 - F5 during import will show the play button instead of the pause button
 - The count(*) request is horrendously slow using postgresql.
 - Javascript and css files are not minifed/obfuscated
 - Graphs do not fetch the data from the DB if you only change granularity. This is by design, but can be misleading during import.
-- The years you can choose from is populated either on page load, or if empty on first click and does not get refreshed after. Same misleading beahavior as above.
+- The years you can choose from is populated either on page load, or, if empty, on first click and does not get refreshed after. Same misleading beahavior as above.
 
 TECHNICAL CHOICES
 
@@ -30,9 +30,10 @@ Play has:
  - a built-in http server
  - a websocket handler
  - an ORM (not really used but still)
- - not been used on one of my previous projects. I like to learn.
+
+Also, I wanted to learn how to use it.
 
 NOTES
 
-If this was really a final client I would have said to him that there is not enough time to do the project. And probably a boring thing like a servlet on tomcat.
+Tested on Firefox, Chrome and IE 11. Not tested on safari.
 I tried to chose the best balance between number of features, quality of code, and fun; I hope you agree with my choices.

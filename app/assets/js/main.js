@@ -3,6 +3,9 @@ hep={};
 (function (){
 
     //call the polyfill for html5 forms
+    webshim.setOptions('forms-ext', {
+        replaceUI: true,
+    });
     webshim.polyfill('forms forms-ext');
 
     //Take care of the websocket
